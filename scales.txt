@@ -1,0 +1,23 @@
+/// add scales here. Each scale must follow the form
+/// (name) (notes in mode by half steps above tonal)
+/// do not include the octave.
+/// order of the notes does not matter.
+///
+major 0,2,4,5,7,9,11
+minor 0,2,3,5,7,9,11
+dorian 0,2,3,5,7,9,10
+phrygian 0,1,3,5,7,8,10
+lydian 0,2,4,6,7,9,11
+mixolydian 0,2,4,5,7,9,10
+aeolian 0,2,3,5,7,8,10
+locrian 0,1,3,5,6,8,10
+///raags
+marwa 0,1,4,6,9,11
+malkauns 0,3,5,8,10
+/// other
+blues 0,3,5,6,7,10
+chromatic 0,1,2,3,4,5,6,7,8,9,10,11
+base 0
+/// add customs below
+minor-thirds 0,3,6,9
+tritonal 0,6
