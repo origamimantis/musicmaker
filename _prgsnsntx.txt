@@ -1,0 +1,9 @@
+note ::= "A"|"B"|"C"|"D"|"E"|"F"|"G"
+axdl ::= "b"|"#"
+
+chord ::= note[axdl]{";"note[axdl]}
+
+chdsep ::= "\n"|";"
+
+file ::= chord{ chdsep chord }
+
