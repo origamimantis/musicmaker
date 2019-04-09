@@ -1,20 +1,23 @@
 from collections import defaultdict, deque
 from random import choice as randchoice
+from _inputter import input_chord, input_int
 
 
 
-def word_at_a_time(file : open):
+def chord_gen(file : open):
+    '''Generator that yields each chord in a file.'''
+
     for line in file:
-        for item in line.strip().split():
-                yield item
+        for item in line.split(','):
+                yield item.strip()
 
 
-def parse_file(prgsnlen : int, file : open) -> {(str):[str]}:
-    pattern_dict = defaultdict(set)
-    gen = word_at_a_time(file)
+def parse_file(pattern_dict: defaultdict , weight : int, the_file : open) -> {(str):[str]}:
+    '''Reads a given file and generates a dictionary mapping partial progressions to possible chords.'''
     
-    # Build initial list
-    current_phrase = deque((next(gen) for x in range(prgsnlen)) , maxlen = prgsnlen)
+    gen = chord_gen(the_file)
+    
+    current_phrase = deque((next(gen) for x in range(weight)) , maxlen = weight)
     
     for chord in gen:
 
@@ -23,64 +26,39 @@ def parse_file(prgsnlen : int, file : open) -> {(str):[str]}:
         current_phrase.popleft()
         current_phrase.append(chord)
 
-    return pattern_dict
             
 
 
 def patt_as_str(pattern_dict : {(str):[str]}) -> str:
     
-    word_lens = tuple(len(ls) for ls in pattern_dict.values())
+    prgsn_lens = tuple(len(ls) for ls in pattern_dict.values())
     
-    return ''.join("  " + str(phrase) + " can be followed by any of " + str(pattern_dict[phrase]) + '\n' for phrase in sorted(pattern_dict)) + "max/min list lengths = " + str(max(word_lens)) + '/' + str(min(word_lens)) + '\n'
+    return ''.join("  " + str(phrase) + " precedes by any of " + str(pattern_dict[phrase]) + '\n' for phrase in sorted(pattern_dict)) + "max/min list lengths = " + str(max(prgsn_lens)) + '/' + str(min(prgsn_lens)) + '\n'
 
 
-def produce_text(pattern_dict : {(str):[str]}, start : [str], count : int) -> [str]:
-    words = start[:]
-    try:
-        for x in range(count):
 
-            words.append( randchoicechoice(pattern_dict[  tuple(words[-len(start):])  ]  ))
-            
-    except KeyError:
-        words.append(None)
+def generate_prgsn(pattern_dict: {(str):[str]}, weight: int, total_len: int , curl: bool = False) -> [str]:
+    '''Generates and returns list of chord progressions; with option to continue if next chord isn't found.'''
+    
+    prgsn = list(randchoice(tuple(pattern_dict.keys())))
+   
+    c = 0
 
-    return words
-        
-
-def input_chord( message , legal = lambda x: True):
-    while True:
-        g = input(message + ": ")
-        if legal(g):
-            return g
-        print(f"'{g}' is not a legal chord.")
-
-def input_int( message , legal = lambda x: True):
-    while True:
-        g = input(message + ": ")
+    while c < total_len:
         try:
-            f = int(g)
-            if legal(f):
-                return f
+            prgsn.append( randchoice(tuple(pattern_dict[  tuple(prgsn[-weight:])  ]  )))
+            c += 1
+            
+        except IndexError:
+            if curl:
+                prgsn.extend(  randchoice( tuple( pattern_dict.keys() ) )  )
+                c += weight 
+            else:
+                prgsn.append(None)
+                break
 
-        except ValueError:
-            print(f"'{g}' is not a legal integer.")
-        
-if __name__ == '__main__':
-    # Write script here
-    
+    return prgsn
 
-    with open(input("Select the file name to read: "), 'r') as the_file:
-        prgsnlen = input_int("Select weight of progression", legal = (lambda x: x > 0))
-        pattern_dict = parse_file(prgsnlen, the_file)
-    print("Possible Proggressions\n" + patt_as_str(pattern_dict) + "\nSelect", prgsnlen, "words for start of list")
-
-    starter = [input(f"Select word {x + 1}" , 
-        is_legal = (lambda chd: any(chd in chdprog for chdprog in pattern_dict)))
-        for x in range(prgsnlen)]
-    
-    words_len = input_int("Choose # of words for appending to list", legal = (lambda x: x > 0))
-    print("Random text =", produce_text(pattern_dict, starter, words_len))
-    
 
 
 
