@@ -1,30 +1,7 @@
 from collections import defaultdict, deque
 from random import choice as randchoice
-from _inputter import input_chord, input_int
 
 
-
-def chord_gen(file : open):
-    '''Generator that yields each chord in a file.'''
-
-    for line in file:
-        for item in line.split(','):
-            yield frozenset(item.strip()[1:-1].split(';'))
-
-
-def parse_file(pattern_dict: defaultdict , weight : int, the_file : open) -> {(str):[str]}:
-    '''Reads a given file and generates a dictionary mapping partial progressions to possible chords.'''
-    
-    gen = chord_gen(the_file)
-    
-    current_phrase = deque((next(gen) for x in range(weight)) , maxlen = weight)
-    
-    for chord in gen:
-
-        pattern_dict[tuple(current_phrase)].add(chord)
-
-        current_phrase.popleft()
-        current_phrase.append(chord)
 
             
 
@@ -41,22 +18,29 @@ def generate_prgsn(pattern_dict: {(str):[str]}, weight: int, total_len: int , cu
     '''Generates and returns list of chord progressions; with option to continue if next chord isn't found.'''
     
     prgsn = list(randchoice(tuple(pattern_dict.keys())))
+    ids = [id(x) for x in prgsn]
    
-    c = 0
+    c = weight
 
     while c < total_len:
         try:
-            prgsn.append( randchoice(tuple(pattern_dict[  tuple(prgsn[-weight:])  ]  )))
+            k =  randchoice(tuple(pattern_dict[  tuple(prgsn[-weight:])  ]  ))
+            prgsn.append( k)
+            ids.append( id(k))
             c += 1
             
         except IndexError:
             if curl:
-                prgsn.extend(  randchoice( tuple( pattern_dict.keys() ) )  )
+                h =   randchoice( tuple( pattern_dict.keys() ))
+                prgsn.extend(   h  )
+                ids.extend( id(k) for k in h)
+                
+                
                 c += weight 
             else:
                 prgsn.append(None)
                 break
 
-    return [set(chd) for chd in prgsn]
+    return [set(chd) for chd in prgsn], ids
 
 

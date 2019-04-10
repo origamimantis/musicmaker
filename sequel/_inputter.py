@@ -41,6 +41,7 @@ def input_int( message , legal = lambda x: True):
             f = int(g)
             if legal(f):
                 return f
+            print(f"'{g}' is not a legal integer.")
 
         except ValueError:
             print(f"'{g}' is not a legal integer.")
