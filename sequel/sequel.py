@@ -6,9 +6,13 @@ from _inputter   import input_int
 if __name__ == '__main__':
    
     pattern_dict = defaultdict(set)
-    with open(input("Select the file name to read: "), 'r') as the_file:
-        weight = input_int("Select weight of progression", legal = (lambda x: x > 0))
-        parse_file( pattern_dict, weight, the_file)
+    
+    weight = input_int("Select weight of progression", legal = (lambda x: x > 0))
+    
+    for progfile in Path("files").iterdir():
+
+        with open(progfile, 'r') as the_file:
+            parse_file( pattern_dict, weight, the_file)
 
     print("Possible Progressions\n" + patt_as_str(pattern_dict))
 

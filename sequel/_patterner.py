@@ -9,7 +9,7 @@ def chord_gen(file : open):
 
     for line in file:
         for item in line.split(','):
-                yield item.strip()
+            yield frozenset(item.strip()[1:-1].split(';'))
 
 
 def parse_file(pattern_dict: defaultdict , weight : int, the_file : open) -> {(str):[str]}:
@@ -33,7 +33,7 @@ def patt_as_str(pattern_dict : {(str):[str]}) -> str:
     
     prgsn_lens = tuple(len(ls) for ls in pattern_dict.values())
     
-    return ''.join("  " + str(phrase) + " precedes by any of " + str(pattern_dict[phrase]) + '\n' for phrase in sorted(pattern_dict)) + "max/min list lengths = " + str(max(prgsn_lens)) + '/' + str(min(prgsn_lens)) + '\n'
+    return ''.join("  " + '[' + ', '.join(str(set(chd)) for chd in phrase) + "] precedes by any of [" + ', '.join(str(set(nex)) for nex in pattern_dict[phrase]) + ']\n' for phrase in pattern_dict)
 
 
 
