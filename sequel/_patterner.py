@@ -18,22 +18,19 @@ def generate_prgsn(pattern_dict: {(str):[str]}, weight: int, total_len: int , cu
     '''Generates and returns list of chord progressions; with option to continue if next chord isn't found.'''
     
     prgsn = list(randchoice(tuple(pattern_dict.keys())))
-    ids = [id(x) for x in prgsn]
    
     c = weight
 
     while c < total_len:
         try:
             k =  randchoice(tuple(pattern_dict[  tuple(prgsn[-weight:])  ]  ))
-            prgsn.append( k)
-            ids.append( id(k))
+            prgsn.append(k)
             c += 1
             
         except IndexError:
             if curl:
                 h =   randchoice( tuple( pattern_dict.keys() ))
-                prgsn.extend(   h  )
-                ids.extend( id(k) for k in h)
+                prgsn.extend(h)
                 
                 
                 c += weight 
@@ -41,6 +38,6 @@ def generate_prgsn(pattern_dict: {(str):[str]}, weight: int, total_len: int , cu
                 prgsn.append(None)
                 break
 
-    return [set(chd) for chd in prgsn], ids
+    return [set(chd) for chd in prgsn][:total_len]
 
 
