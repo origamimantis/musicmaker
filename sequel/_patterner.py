@@ -57,8 +57,6 @@ def generate_prgsn(pattern_dict: {(str):[str]}, weight: int, total_len: int , cu
                 prgsn.append(None)
                 break
 
-    return prgsn
-
-
+    return [set(chd) for chd in prgsn]
 
 
