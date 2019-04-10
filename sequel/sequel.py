@@ -1,7 +1,7 @@
 from collections import defaultdict
 from _reader     import parse_file, update_dict
 from _patterner  import patt_as_str, generate_prgsn
-from _inputter   import input_int
+from _inputter   import input_int, input_yn
 
 FILE_NAME = 'out.txt'
 
@@ -28,15 +28,15 @@ if __name__ == '__main__':
         the_progression  = None
    
     print("Progression generated successfully!\n")
-    if len(the_progression) < 25 or input("This progression is very long. Print to console (y/n) (default : no)? ").strip().lower() == 'y':
+    if input_yn("Print results to console" , default = 'n'):
         print("Random progression =", the_progression)
     print()
    
-    write_bool = input("Write progression to file (y/n) (default : yes)? ").strip().lower()
+    write_bool = input_yn("Write progression to file" , default = 'y')
     
     print()
     
-    if write_bool in ('y',''):
+    if write_bool:
         print(f"Writing results to {FILE_NAME} ...\n")
         with open(FILE_NAME, 'w') as the_file:
 
